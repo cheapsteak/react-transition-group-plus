@@ -1,0 +1,122 @@
+{
+  "name": "react-transition-group-plus",
+  "version": "0.1.0",
+  "description": "More full featured transition group for react",
+  "author": "Chang Wang <cheapsteak@gmail.com>",
+  "license": "BSD",
+  "main": "src/ReactTransitionGroupPlus.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cheapsteak/react-transition-group-plus.git"
+  },
+  "homepage": "https://github.com/cheapsteak/react-transition-group-plus",
+  "scripts": {
+    "start": "rm -rf public && gulp",
+    "build": "rm -rf public && gulp build",
+    "lint": "eslint src",
+    "test": "mocha src/**/__tests__/*.js --compilers js:babel-core/register --require test/test-helper"
+  },
+  "keywords": [
+    "react",
+    "transition-group",
+    "animations"
+  ],
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^0.14.6"
+  },
+  "build": {
+    "source": "./src",
+    "destination": "./public",
+    "scripts": {
+      "source": "./src/main.js",
+      "destination": "./public/js/",
+      "extensions": [],
+      "filename": "bundle.js"
+    },
+    "templates": {
+      "source": "./src/*.jade",
+      "watch": "./src/*.jade",
+      "destination": "./public/",
+      "revision": "./public/**/*.html"
+    },
+    "styles": {
+      "source": "./src/**/*.styl",
+      "watch": "./src/**/*.styl",
+      "destination": "./public/css/",
+      "filename": "style.css",
+      "browserVersions": [
+        "last 2 versions",
+        "Chrome 34",
+        "Firefox 28",
+        "iOS 7"
+      ]
+    },
+    "assets": {
+      "source": "./src/assets/**/*.*",
+      "watch": "./src/assets/**/*.*",
+      "destination": "./public/"
+    },
+    "inject": {
+      "resources": [
+        "./public/**/*.css",
+        "./public/**/*.js"
+      ]
+    }
+  },
+  "devDependencies": {
+    "babel": "^6.1.18",
+    "babel-core": "^6.2.1",
+    "babel-eslint": "^4.1.3",
+    "babel-plugin-react-transform": "^2.0.0",
+    "babel-preset-es2015": "^6.1.18",
+    "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-1": "^6.3.13",
+    "babel-runtime": "^5.8.35",
+    "babelify": "^7.2.0",
+    "browser-sync": "^2.9.4",
+    "browserify": "^10.2.1",
+    "browserify-hmr": "^0.3.1",
+    "chai": "^3.0.0",
+    "envify": "^3.4.0",
+    "eslint": "^1.5.1",
+    "eslint-config-airbnb": "0.0.9",
+    "eslint-plugin-react": "^3.4.2",
+    "exorcist": "^0.4.0",
+    "gsap-promise": "^1.4.1",
+    "gulp": "3.9.0",
+    "gulp-autoprefixer": "1.0.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-duration": "0.0.0",
+    "gulp-inject": "^3.0.0",
+    "gulp-jade": "~0.9.0",
+    "gulp-replace": "^0.5.3",
+    "gulp-rev": "^4.0.0",
+    "gulp-sourcemaps": "^1.3.0",
+    "gulp-streamify": "0.0.5",
+    "gulp-stylus": "~2.0.0",
+    "gulp-uglify": "~1.0.1",
+    "gulp-util": "~3.0.1",
+    "gulp-watch": "^4.3.4",
+    "jsdom": "^5.6.0",
+    "mocha": "^2.2.5",
+    "node-notifier": "^4.2.1",
+    "react-addons-transition-group": "^0.14.6",
+    "react-dom": "^0.14.6",
+    "react-transform-hmr": "^1.0.1",
+    "rimraf": "^2.3.4",
+    "vinyl-source-stream": "~1.0.0",
+    "vinyl-transform": "^1.0.0",
+    "watchify": "^3.2.1"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify"
+      ],
+      [
+        "envify"
+      ]
+    ]
+  }
+}
