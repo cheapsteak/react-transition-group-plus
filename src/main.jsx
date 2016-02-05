@@ -5,7 +5,12 @@ import ReactTransitionGroup from 'react-addons-transition-group';
 import ReactTransitionGroupPlus from './ReactTransitionGroupPlus.js';
 import animate from 'gsap-promise';
 
+const enterDuration = 1;
+const leaveDuration = 1;
+
 class Animates extends React.Component {
+
+  i = 0;
 
   static animationStates = {
     beforeEnter: { opacity: 0, y: 100 },
@@ -24,15 +29,26 @@ class Animates extends React.Component {
   }
 
   componentWillEnter(callback) {
-    animate.to(findDOMNode(this), 0.5, Animates.animationStates.afterEnter).then(callback);
+    console.log('willenter: ', this.props.className);
+    animate.to(findDOMNode(this), enterDuration, Animates.animationStates.afterEnter).then(callback);
   }
 
   componentWillLeave(callback) {
-    animate.to(findDOMNode(this), 0.5, Animates.animationStates.afterLeave).then(callback);
+    animate.to(findDOMNode(this), leaveDuration, Animates.animationStates.afterLeave).then(callback);
   }
 
+  // componentCancelledEnter() {
+  //   console.log('cancelled enter', this.props.className);
+  //   TweenMax.killTweensOf(findDOMNode(this));
+  // }
+
+  // componentCancelledLeave() {
+  //   console.log('cancelled leave', this.props.className);
+  //   TweenMax.killTweensOf(findDOMNode(this));
+  // }
+
   render() {
-    return <div className={`animates ${this.props.className}`}>{this.props.text}</div>;
+    return <div className={`animates ${this.props.className}`}>{this.props.className}</div>;
   }
 
 }
@@ -44,6 +60,7 @@ class App extends React.Component {
   };
 
   handleClick = () => {
+    console.log('------------- click -----------');
     this.setState({counter: this.state.counter + 1});
   };
 
@@ -64,8 +81,8 @@ class App extends React.Component {
       <ReactTransitionGroupPlus transitionMode={this.state.transitionMode}>
         {
           this.state.counter % 2 === 0
-          ? <Animates key={1} className="blue" text="123123"/>
-          : <Animates key={2} className="red" text="asdf"/>
+          ? <Animates key={'blue'} className="blue"/>
+          : <Animates key={'red'} className="red"/>
         }
       </ReactTransitionGroupPlus>
     </div>;
