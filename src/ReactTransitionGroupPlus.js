@@ -17,6 +17,8 @@ var ReactTransitionChildMapping = require('react/lib/ReactTransitionChildMapping
 
 var assign = require('react/lib/Object.assign');
 
+window.iii = 0;
+
 function getColorByKey (key) {
   return 'color: ' + {
     '.$red': '#aa3333',
@@ -51,8 +53,11 @@ var ReactTransitionGroupPlus = React.createClass({
 
   componentWillMount: function() {
     window.ttt = this;
-    this.currentlyTransitioningKeys = {};
-    this.currentlyVisibleKeys = {};
+    // previously currently visible
+    // don't want to performLeave on keys that never entered
+    this.currentlyEnteringOrEnteredKeys = {};
+    // don't want to performEnter on keys that never left
+    this.currentlyLeavingKeys = {};
     this.keysToEnter = [];
     this.keysToLeave = [];
     this.cancel = null;
@@ -85,7 +90,7 @@ var ReactTransitionGroupPlus = React.createClass({
 
     for (key in nextChildMapping) {
       var hasPrev = prevChildMapping && prevChildMapping.hasOwnProperty(key);
-      if (nextChildMapping[key] && !hasPrev) {
+      if (nextChildMapping[key] && (!hasPrev || (this.props.transitionMode === 'in-out' && this.currentlyLeavingKeys[key]))) {
         this.keysToEnter.push(key);
       }
     }
@@ -93,7 +98,7 @@ var ReactTransitionGroupPlus = React.createClass({
     for (key in prevChildMapping) {
       var hasNext = nextChildMapping && nextChildMapping.hasOwnProperty(key);
       if (prevChildMapping[key] && !hasNext ) {
-        // console.log('%c pushing to leave keys' + key, getColorByKey(key));
+        console.log('%c pushing to leave keys' + key, getColorByKey(key));
         this.keysToLeave.push(key);
       }
     }
@@ -125,13 +130,17 @@ var ReactTransitionGroupPlus = React.createClass({
         break;
       case 'in-out':
         this.keysToEnter = [];
+        this.keysToLeave = [];
+
+        console.log('keysToLeave', keysToLeave, 'keysToEnter', keysToEnter);
+
         if (keysToEnter.length) {
           Promise.all(keysToEnter.map(this.performEnter))
             .then(function () {
               keysToLeave.forEach(this.performLeave)
             }.bind(this))
         } else {
-          this.keysToLeave = [];
+          // this.keysToLeave = [];
           keysToLeave.forEach(this.performLeave)
         }
         break;
@@ -145,8 +154,7 @@ var ReactTransitionGroupPlus = React.createClass({
   },
 
   performAppear: function(key) {
-    this.currentlyTransitioningKeys[key] = true;
-    this.currentlyVisibleKeys[key] = true;
+    this.currentlyEnteringOrEnteredKeys[key] = true;
 
     var component = this.refs[key];
 
@@ -165,8 +173,6 @@ var ReactTransitionGroupPlus = React.createClass({
       component.componentDidAppear();
     }
 
-    delete this.currentlyTransitioningKeys[key];
-
     var currentChildMapping = ReactTransitionChildMapping.getChildMapping(
       this.props.children
     );
@@ -180,7 +186,6 @@ var ReactTransitionGroupPlus = React.createClass({
   performEnter: function(key) {
     console.log('%c performEnter' + key, getColorByKey(key));
 
-
     this.cancelPending();
 
 
@@ -191,8 +196,7 @@ var ReactTransitionGroupPlus = React.createClass({
       return Promise.resolve();
     }
 
-    this.currentlyTransitioningKeys[key] = true;
-    this.currentlyVisibleKeys[key] = true;
+    this.currentlyEnteringOrEnteredKeys[key] = true;
 
     var callback = this._handleDoneEntering.bind(this, key);
     this.pendingCallback = callback;
@@ -216,16 +220,17 @@ var ReactTransitionGroupPlus = React.createClass({
       component.componentDidEnter();
     }
 
-    delete this.currentlyTransitioningKeys[key];
-
     var currentChildMapping = ReactTransitionChildMapping.getChildMapping(
       this.props.children
     );
 
-    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key) && this.currentlyVisibleKeys[key]) {
+    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key) && this.currentlyEnteringOrEnteredKeys[key]) {
       // This was removed before it had fully entered. Remove it.
       console.log('%c This was removed before it had fully entered. Remove it.' + key, getColorByKey(key));
-      this.performLeave(key);
+
+      if (this.props.transitionMode !== 'in-out') {
+        this.performLeave(key);
+      }
       // this.keysToLeave = [];
       // delete this.keysToLeave[key];
       // this.keysToLeave.push(key);
@@ -235,7 +240,7 @@ var ReactTransitionGroupPlus = React.createClass({
 
   performLeave: function(key) {
     this.cancelPending();
-    if (!this.currentlyVisibleKeys[key]) {
+    if (!this.currentlyEnteringOrEnteredKeys[key]) {
       console.log('%c not visible', getColorByKey(key));
       // not visible, no need to leave
       return Promise.resolve();
@@ -248,7 +253,7 @@ var ReactTransitionGroupPlus = React.createClass({
       return Promise.resolve();
     }
 
-    this.currentlyTransitioningKeys[key] = true;
+    this.currentlyLeavingKeys[key] = true;
     console.log('%c perform leave', getColorByKey(key));
 
     var callback = this._handleDoneLeaving.bind(this, key);
@@ -279,7 +284,7 @@ var ReactTransitionGroupPlus = React.createClass({
       component.componentDidLeave();
     }
 
-    delete this.currentlyTransitioningKeys[key];
+    delete this.currentlyLeavingKeys[key];
 
     var currentChildMapping = ReactTransitionChildMapping.getChildMapping(
       this.props.children
@@ -288,17 +293,17 @@ var ReactTransitionGroupPlus = React.createClass({
     if (currentChildMapping && currentChildMapping.hasOwnProperty(key)) {
       // This entered again before it fully left. Add it again.
       console.log('%c This entered again before it fully left. Add it again.' + key, getColorByKey(key));
-      console.log(this.currentlyTransitioningKeys);
       // but only perform enter if currently animating out, not already animated out
-      console.log('%c !!---&& is transitioning: ' + !!this.currentlyTransitioningKeys[key], getColorByKey(key))
-      this.performEnter(key);
+      if (this.props.transitionMode !== 'in-out') {
+        this.performEnter(key);
+      }
       // this.keysToEnter = [];
 
       // delete this.keysToEnter[key];
       // this.keysToEnter.push(key);
       // this.forceUpdate();
     } else {
-      delete this.currentlyVisibleKeys[key];
+      delete this.currentlyEnteringOrEnteredKeys[key];
       this.setState(function(state) {
         var newChildren = assign({}, state.children);
         delete newChildren[key];

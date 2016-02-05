@@ -56,7 +56,7 @@ class Animates extends React.Component {
 class App extends React.Component {
   state = {
     counter: 0,
-    transitionMode: 'out-in'
+    transitionMode: 'in-out'
   };
 
   handleClick = () => {
@@ -80,9 +80,11 @@ class App extends React.Component {
       </button>
       <ReactTransitionGroupPlus transitionMode={this.state.transitionMode}>
         {
-          this.state.counter % 2 === 0
-          ? <Animates key={'blue'} className="blue"/>
-          : <Animates key={'red'} className="red"/>
+          [
+            <Animates key={'blue'} className="blue"/>,
+            <Animates key={'red'} className="red"/>,
+            <Animates key={'green'} className="green"/>
+          ][this.state.counter % 3]
         }
       </ReactTransitionGroupPlus>
     </div>;
