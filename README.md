@@ -4,4 +4,4 @@ Forked from React's [ReactTransitionGroup](https://github.com/facebook/react/blo
 
 Drop-in replacement for ReactTransitionGroup that will allow scheduling entrance animations to happen before or after outgoing animations, and add cancel hooks so interactions aren't stuck until the animations are done. 
 
-Inspired by Vue and references code from Vue's transitions implementation.
+Inspired by [Vue's transition](http://vuejs.org/guide/transitions.html#JavaScript_Transitions).
