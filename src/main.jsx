@@ -5,50 +5,80 @@ import ReactTransitionGroup from 'react-addons-transition-group';
 import ReactTransitionGroupPlus from './ReactTransitionGroupPlus.js';
 import animate from 'gsap-promise';
 
-const enterDuration = 1;
-const leaveDuration = 1;
+import _ from 'lodash';
+
+const enterDuration = 0.5;
+const leaveDuration = 0.5;
+
+function getColorByKey (key) {
+  return 'color: ' + {
+    'red': '#aa3333',
+    'blue': '#3333ff',
+    'green': '#33aa33',
+    'orange': '#ffa500',
+    'purple': '#800080',
+  }[key];
+}
+
+const animationStates = {
+  beforeEnter: { opacity: 0, y: 100 },
+  // afterEnter: { opacity: 1, y: 0 },
+  // beforeLeave: { opacity: 1, y: 0 },
+  idle: { opacity: 1, y: 0 },
+  afterLeave: { opacity: 0, y: -50},
+}
 
 class Animates extends React.Component {
-
-  i = 0;
-
-  static animationStates = {
-    beforeEnter: { opacity: 0, y: 100 },
-    afterEnter: { opacity: 1, y: 0 },
-    beforeLeave: { opacity: 1, y: 0 },
-    afterLeave: { opacity: 0, y: -50}
-  };
-
+  
+  static animationStates = animationStates;
+  
   componentDidMount() {
-    animate.set(findDOMNode(this), Animates.animationStates.beforeEnter);
+    const el = findDOMNode(this);
+
+    console.log('did mount');
+
+    this.timeline = new TimelineMax()
+      .pause()
+      .add(TweenMax.to(el, 1, Animates.animationStates.beforeEnter))
+      .add('beforeEnter')
+      .add(TweenMax.to(el, 1, Animates.animationStates.idle))
+      .add('idle')
+      .add(TweenMax.to(el, 1, Animates.animationStates.afterLeave))
+      .add('afterLeave')
+
+
+    this.timeline.seek('beforeEnter');
   }
 
   componentWillAppear(callback) {
-    animate.set(findDOMNode(this), Animates.animationStates.afterEnter);
+    console.log('will appear');
+    this.timeline.seek('idle');
     callback();
   }
 
   componentWillEnter(callback) {
     console.log('willenter: ', this.props.className);
-    animate.to(findDOMNode(this), enterDuration, Animates.animationStates.afterEnter).then(callback);
+    const el = findDOMNode(this);
+
+    this.timeline
+      .pause()
+      .seek('beforeEnter');
+    TweenMax.killTweensOf(this.timeline);
+    TweenMax.set(el, {zIndex: this.props.key});
+    TweenMax.to(this.timeline, 1, { time: this.timeline.getLabelTime('idle'), onComplete: callback });
   }
 
   componentWillLeave(callback) {
-    animate.to(findDOMNode(this), leaveDuration, Animates.animationStates.afterLeave).then(callback);
+    const className = this.props.className;
+    console.log('%c will leave', getColorByKey(className));
+    
+    this.timeline.pause();
+    TweenMax.killTweensOf(this.timeline);
+    TweenMax.to(this.timeline, 1, { time: this.timeline.getLabelTime('afterLeave'), onComplete: callback });
   }
 
-  // componentCancelledEnter() {
-  //   console.log('cancelled enter', this.props.className);
-  //   TweenMax.killTweensOf(findDOMNode(this));
-  // }
-
-  // componentCancelledLeave() {
-  //   console.log('cancelled leave', this.props.className);
-  //   TweenMax.killTweensOf(findDOMNode(this));
-  // }
-
   render() {
-    return <div className={`animates ${this.props.className}`}>{this.props.className}</div>;
+    return <div className={`animates ${this.props.className}`}></div>;
   }
 
 }
@@ -69,6 +99,13 @@ class App extends React.Component {
   };
 
   render() {
+    const color = [
+      'blue',
+      'red',
+      'green',
+      'orange',
+      'purple'
+    ][this.state.counter % 5];
     return <div>
       <select value={this.state.transitionMode} onChange={this.handleTransitionModeChange}>
         <option value="out-in">Out then In</option>
@@ -78,16 +115,9 @@ class App extends React.Component {
       <button onClick={this.handleClick}>
         Click Me
       </button>
+      {color}
       <ReactTransitionGroupPlus transitionMode={this.state.transitionMode}>
-        {
-          [
-            <Animates key={'blue'} className="blue"/>,
-            <Animates key={'red'} className="red"/>,
-            <Animates key={'green'} className="green"/>,
-            <Animates key={'orange'} className="orange"/>,
-            <Animates key={'purple'} className="purple"/>,
-          ][this.state.counter % 3]
-        }
+        <Animates key={this.state.counter} className={color}/>
       </ReactTransitionGroupPlus>
     </div>;
   }
