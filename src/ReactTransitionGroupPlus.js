@@ -105,7 +105,6 @@ var ReactTransitionGroupPlus = React.createClass({
     for (key in prevChildMapping) {
       var hasNext = nextChildMapping && nextChildMapping.hasOwnProperty(key);
       if (prevChildMapping[key] && !hasNext ) {
-        console.log('%c pushing to leave keys' + key, getColorByKey(key));
         this.keysToLeave.push(key);
       }
     }
@@ -124,14 +123,13 @@ var ReactTransitionGroupPlus = React.createClass({
 
     // console.log({keysToEnter, keysToLeave, refs: JSON.stringify(Object.keys(this.refs))});
 
+    console.log('keysToLeave', keysToLeave, 'keysToEnter', keysToEnter);
     switch (this.props.transitionMode) {
       case 'out-in':
-        console.log('keysToLeave', keysToLeave, 'keysToEnter', keysToEnter);
         this.keysToLeave = [];
         if (keysToLeave.length) {
           keysToLeave.forEach(this.performLeave)
         } else {
-          console.log('!!!!!!! entering:' + keysToEnter);
           this.keysToEnter = [];
           keysToEnter.forEach(this.performEnter)
         }
@@ -140,15 +138,12 @@ var ReactTransitionGroupPlus = React.createClass({
         this.keysToEnter = [];
         this.keysToLeave = [];
 
-        console.log('keysToLeave', keysToLeave, 'keysToEnter', keysToEnter);
-
         if (keysToEnter.length) {
           Promise.all(keysToEnter.map(this.performEnter))
             .then(function () {
               keysToLeave.forEach(this.performLeave)
             }.bind(this))
         } else {
-          // this.keysToLeave = [];
           keysToLeave.forEach(this.performLeave)
         }
         break;
@@ -287,13 +282,9 @@ var ReactTransitionGroupPlus = React.createClass({
       // Note that this is somewhat dangerous b/c it calls setState()
       // again, effectively mutating the component before all the work
       // is done.
-      .then(function () {
-        console.log('%c leavePromise resolved', getColorByKey(key));
-        return Promise.resolve();
-      }.bind(this))
       .then(callback);
-    this.currentlyLeavingPromises[key] = leavePromise;
 
+    this.currentlyLeavingPromises[key] = leavePromise;
     return leavePromise;
   },
 
@@ -330,6 +321,7 @@ var ReactTransitionGroupPlus = React.createClass({
       });
     }
   },
+
   cancelPendingLeave: function (key) {
     if (this.pendingLeaveCallbacks[key]) {
       this.pendingLeaveCallbacks[key]();

@@ -4,6 +4,7 @@ import { render, findDOMNode } from 'react-dom';
 import ReactTransitionGroup from 'react-addons-transition-group';
 import ReactTransitionGroupPlus from './ReactTransitionGroupPlus.js';
 import animate from 'gsap-promise';
+import RadioGroup from 'react-radio-group';
 
 import _ from 'lodash';
 
@@ -22,16 +23,14 @@ function getColorByKey (key) {
 
 const animationStates = {
   beforeEnter: { opacity: 0, y: 100 },
-  // afterEnter: { opacity: 1, y: 0 },
-  // beforeLeave: { opacity: 1, y: 0 },
   idle: { opacity: 1, y: 0 },
   afterLeave: { opacity: 0, y: -50},
-}
+};
 
 class Animates extends React.Component {
-  
+
   static animationStates = animationStates;
-  
+
   componentDidMount() {
     const el = findDOMNode(this);
 
@@ -46,7 +45,6 @@ class Animates extends React.Component {
       .add(TweenMax.to(el, 1, Animates.animationStates.afterLeave))
       .add('afterLeave')
 
-
     this.timeline.seek('beforeEnter');
   }
 
@@ -57,11 +55,9 @@ class Animates extends React.Component {
   }
 
   componentWillEnter(callback) {
-    console.log('willenter: ', this.props.className);
     const el = findDOMNode(this);
 
     this.timeline
-      .pause()
       .seek('beforeEnter');
     TweenMax.killTweensOf(this.timeline);
     TweenMax.set(el, {zIndex: this.props.key});
@@ -70,8 +66,6 @@ class Animates extends React.Component {
 
   componentWillLeave(callback) {
     const className = this.props.className;
-    console.log('%c will leave', getColorByKey(className));
-    
     this.timeline.pause();
     TweenMax.killTweensOf(this.timeline);
     TweenMax.to(this.timeline, 1, { time: this.timeline.getLabelTime('afterLeave'), onComplete: callback });
@@ -86,7 +80,8 @@ class Animates extends React.Component {
 class App extends React.Component {
   state = {
     counter: 0,
-    transitionMode: 'out-in'
+    transitionMode: 'out-in',
+    transitionGroupComponent: ReactTransitionGroupPlus
   };
 
   handleClick = () => {
@@ -98,27 +93,50 @@ class App extends React.Component {
     this.setState({transitionMode: e.target.value});
   };
 
+  handleTransitionGroupComponentChange = (componentName) => {
+    this.setState({
+      transitionGroupComponent: componentName === 'ReactTransitionGroupPlus'
+        ? ReactTransitionGroupPlus
+        : ReactTransitionGroup
+    });
+  };
+
   render() {
     const color = [
       'blue',
       'red',
       'green',
       'orange',
-      'purple'
+      'purple',
     ][this.state.counter % 5];
+
+    const TransitionGroup = this.state.transitionGroupComponent;
+    const selectedTransitionGroupComponentName = this.state.transitionGroupComponent === ReactTransitionGroupPlus
+      ? 'ReactTransitionGroupPlus'
+      : 'ReactTransitionGroup';
+
     return <div>
-      <select value={this.state.transitionMode} onChange={this.handleTransitionModeChange}>
-        <option value="out-in">Out then In</option>
-        <option value="in-out">In then Out</option>
-        <option value="simultaneous">Simultaneous</option>
-      </select>
+      <RadioGroup name="transitionGroupComponent" selectedValue={selectedTransitionGroupComponentName} onChange={this.handleTransitionGroupComponentChange}>
+        {Radio => (
+          <div>
+            <label><Radio value="ReactTransitionGroupPlus" /> ReactTransitionGroupPlus</label>
+            <label><Radio value="ReactTransitionGroup" /> ReactTransitionGroup</label>
+          </div>
+        )}
+      </RadioGroup>
+      { TransitionGroup === ReactTransitionGroupPlus &&
+        <select value={this.state.transitionMode} onChange={this.handleTransitionModeChange}>
+          <option value="out-in">Out then In</option>
+          <option value="in-out">In then Out</option>
+          <option value="simultaneous">Simultaneous</option>
+        </select>
+      }
       <button onClick={this.handleClick}>
         Click Me
       </button>
-      {color}
-      <ReactTransitionGroupPlus transitionMode={this.state.transitionMode}>
+      <TransitionGroup transitionMode={this.state.transitionMode}>
         <Animates key={this.state.counter} className={color}/>
-      </ReactTransitionGroupPlus>
+      </TransitionGroup>
     </div>;
   }
 }
