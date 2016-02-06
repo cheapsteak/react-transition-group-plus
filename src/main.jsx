@@ -16,7 +16,7 @@ class Animates extends React.Component {
     beforeEnter: { opacity: 0, y: 100 },
     afterEnter: { opacity: 1, y: 0 },
     beforeLeave: { opacity: 1, y: 0 },
-    afterLeave: { opacity: 0, y: 100}
+    afterLeave: { opacity: 0, y: -50}
   };
 
   componentDidMount() {
@@ -56,7 +56,7 @@ class Animates extends React.Component {
 class App extends React.Component {
   state = {
     counter: 0,
-    transitionMode: 'in-out'
+    transitionMode: 'out-in'
   };
 
   handleClick = () => {
@@ -83,7 +83,9 @@ class App extends React.Component {
           [
             <Animates key={'blue'} className="blue"/>,
             <Animates key={'red'} className="red"/>,
-            <Animates key={'green'} className="green"/>
+            <Animates key={'green'} className="green"/>,
+            <Animates key={'orange'} className="orange"/>,
+            <Animates key={'purple'} className="purple"/>,
           ][this.state.counter % 3]
         }
       </ReactTransitionGroupPlus>

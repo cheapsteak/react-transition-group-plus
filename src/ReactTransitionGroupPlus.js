@@ -23,6 +23,7 @@ function getColorByKey (key) {
   return 'color: ' + {
     '.$red': '#aa3333',
     '.$blue': '#3333ff',
+    '.$green': '#33aa33',
   }[key];
 }
 
@@ -58,10 +59,11 @@ var ReactTransitionGroupPlus = React.createClass({
     this.currentlyEnteringOrEnteredKeys = {};
     // don't want to performEnter on keys that never left
     this.currentlyLeavingKeys = {};
+    this.currentlyLeavingPromises = {};
+    this.pendingCallbacks = {};
     this.keysToEnter = [];
     this.keysToLeave = [];
     this.cancel = null;
-    this.pendingCallback = null;
   },
 
   componentDidMount: function() {
@@ -186,7 +188,7 @@ var ReactTransitionGroupPlus = React.createClass({
   performEnter: function(key) {
     console.log('%c performEnter' + key, getColorByKey(key));
 
-    this.cancelPending();
+    this.cancelPending(key);
 
 
     var component = this.refs[key];
@@ -199,7 +201,7 @@ var ReactTransitionGroupPlus = React.createClass({
     this.currentlyEnteringOrEnteredKeys[key] = true;
 
     var callback = this._handleDoneEntering.bind(this, key);
-    this.pendingCallback = callback;
+    this.pendingCallbacks[key] = callback;
     // this.cancel = component.componentCancelledEnter && component.componentCancelledEnter.bind(component);
 
     return new Promise(function (resolve) {
@@ -213,7 +215,7 @@ var ReactTransitionGroupPlus = React.createClass({
   },
 
   _handleDoneEntering: function(key) {
-    this.cancel = this.pendingCallback = null;
+    delete this.pendingCallbacks[key];
 
     var component = this.refs[key];
     if (component.componentDidEnter) {
@@ -239,11 +241,19 @@ var ReactTransitionGroupPlus = React.createClass({
   },
 
   performLeave: function(key) {
-    this.cancelPending();
     if (!this.currentlyEnteringOrEnteredKeys[key]) {
-      console.log('%c not visible', getColorByKey(key));
+      console.log('%c not visible, do not perform leave', getColorByKey(key));
       // not visible, no need to leave
       return Promise.resolve();
+    }
+
+    if (this.currentlyLeavingKeys[key]) {
+      //already leaving, let it finish
+      console.log('%c already leaving, let finish, return previous promise animation', getColorByKey(key))
+      return this.currentlyLeavingPromises[key];
+    } else {
+      console.log('%c not currently leaving', getColorByKey(key))
+      this.cancelPending(key);
     }
 
     var component = this.refs[key];
@@ -257,10 +267,10 @@ var ReactTransitionGroupPlus = React.createClass({
     console.log('%c perform leave', getColorByKey(key));
 
     var callback = this._handleDoneLeaving.bind(this, key);
-    this.pendingCallback = callback;
+    this.pendingCallbacks[key] = callback;
     // this.cancel = component.componentCancelledLeave && component.componentCancelledLeave.bind(component);
 
-    return new Promise(function (resolve) {
+    const leavePromise = new Promise(function (resolve) {
       if (component.componentWillLeave) {
         // console.log('%c waiting for willLeave to be called' + key, getColorByKey(key));
         component.componentWillLeave(resolve);
@@ -272,11 +282,14 @@ var ReactTransitionGroupPlus = React.createClass({
       // again, effectively mutating the component before all the work
       // is done.
       .then(callback);
+    this.currentlyLeavingPromises[key] = leavePromise;
+
+    return leavePromise;
   },
 
   _handleDoneLeaving: function(key) {
     console.log('%c done leaving ' + key, getColorByKey(key));
-    this.cancel = this.pendingCallback = null;
+    delete this.pendingCallbacks[key];
 
     var component = this.refs[key];
 
@@ -312,14 +325,14 @@ var ReactTransitionGroupPlus = React.createClass({
     }
   },
 
-  cancelPending: function () {
+  cancelPending: function (key) {
     // if (this.cancel) {
     //   this.cancel();
     //   this.cancel = null;
     // }
-    if (this.pendingCallback) {
-      this.pendingCallback(true);
-      this.pendingCallback = null;
+    if (this.pendingCallbacks[key]) {
+      this.pendingCallbacks[key]();
+      delete this.pendingCallbacks[key];
     }
   },
 
