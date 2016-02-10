@@ -6,6 +6,9 @@ import ReactTransitionGroupPlus from './ReactTransitionGroupPlus.js';
 import animate from 'gsap-promise';
 import RadioGroup from 'react-radio-group';
 
+import reactMixin from 'react-mixin';
+import LinkedStateMixin from 'react-addons-linked-state-mixin';
+
 import _ from 'lodash';
 
 const enterDuration = 0.5;
@@ -22,14 +25,21 @@ function getColorByKey (key) {
 }
 
 const animationStates = {
-  beforeEnter: { opacity: 0, y: 100 },
-  idle: { opacity: 1, y: 0 },
-  afterLeave: { opacity: 0, y: -50},
+  // beforeEnter: { opacity: 0, y: 100 },
+  // idle: { opacity: 1, y: 0 },
+  // afterLeave: { opacity: 0, y: -50},
+  beforeEnter: { y: 100, scale: 1.1, opacity: 0 },
+  idle: { y: 0, scale: 1, opacity: 1 },
+  afterLeave: { y: -50, scale: 0.9, opacity: 0 },
 };
 
 class Animates extends React.Component {
 
   static animationStates = animationStates;
+  // state = {
+  //   enterDuration: 0.3,
+  //   leaveDuration: 0.5,
+  // };
 
   componentDidMount() {
     const el = findDOMNode(this);
@@ -38,11 +48,11 @@ class Animates extends React.Component {
 
     this.timeline = new TimelineMax()
       .pause()
-      .add(TweenMax.to(el, 1, Animates.animationStates.beforeEnter))
+      .add(TweenMax.to(el, 1, _.extend(Animates.animationStates.beforeEnter, {ease: Linear.easeNone})))
       .add('beforeEnter')
-      .add(TweenMax.to(el, 1, Animates.animationStates.idle))
+      .add(TweenMax.to(el, 1, _.extend(Animates.animationStates.idle, {ease: Linear.easeNone})))
       .add('idle')
-      .add(TweenMax.to(el, 1, Animates.animationStates.afterLeave))
+      .add(TweenMax.to(el, 1, _.extend(Animates.animationStates.afterLeave, {ease: Linear.easeNone})))
       .add('afterLeave')
 
     this.timeline.seek('beforeEnter');
@@ -61,14 +71,14 @@ class Animates extends React.Component {
       .seek('beforeEnter');
     TweenMax.killTweensOf(this.timeline);
     TweenMax.set(el, {zIndex: this.props.key});
-    TweenMax.to(this.timeline, 1, { time: this.timeline.getLabelTime('idle'), onComplete: callback });
+    TweenMax.to(this.timeline, this.props.enterDuration, { time: this.timeline.getLabelTime('idle'), onComplete: callback, ease: Sine.easeOut });
   }
 
   componentWillLeave(callback) {
     const className = this.props.className;
     this.timeline.pause();
     TweenMax.killTweensOf(this.timeline);
-    TweenMax.to(this.timeline, 1, { time: this.timeline.getLabelTime('afterLeave'), onComplete: callback });
+    TweenMax.to(this.timeline, this.props.leaveDuration, { time: this.timeline.getLabelTime('afterLeave'), onComplete: callback, ease: Sine.easeIn });
   }
 
   render() {
@@ -77,11 +87,14 @@ class Animates extends React.Component {
 
 }
 
+@reactMixin.decorate(LinkedStateMixin)
 class App extends React.Component {
   state = {
     counter: 0,
     transitionMode: 'out-in',
-    transitionGroupComponent: ReactTransitionGroupPlus
+    transitionGroupComponent: ReactTransitionGroupPlus,
+    enterDuration: 0.3,
+    leaveDuration: 0.3,
   };
 
   handleClick = () => {
@@ -131,11 +144,29 @@ class App extends React.Component {
           <option value="simultaneous">Simultaneous</option>
         </select>
       }
+      <br/>
+      <label>
+        Enter Duration: {this.state.enterDuration}
+        <br />
+        <input type="range" valueLink={this.linkState('enterDuration')} min="0" max="2" step="0.1"/>
+        <input type="number" valueLink={this.linkState('enterDuration')} min="0" max="2"/>
+        <br />
+        Leave Duration: {this.state.leaveDuration}
+        <br />
+        <input type="range" valueLink={this.linkState('leaveDuration')} min="0" max="2" step="0.1"/>
+        <input type="number" valueLink={this.linkState('leaveDuration')} min="0" max="2"/>
+      </label>
+      <br/>
       <button onClick={this.handleClick}>
         Click Me
       </button>
       <TransitionGroup transitionMode={this.state.transitionMode}>
-        <Animates key={this.state.counter} className={color}/>
+        <Animates
+          key={this.state.counter}
+          className={color}
+          enterDuration={this.state.enterDuration}
+          leaveDuration={this.state.leaveDuration}
+        />
       </TransitionGroup>
     </div>;
   }

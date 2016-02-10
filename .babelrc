@@ -1,5 +1,6 @@
 {
   "presets": ["es2015", "react", "babel-preset-stage-1"],
+  "plugins": ["babel-plugin-transform-decorators-legacy"],
   "env": {
     "development": {
       "plugins": [
