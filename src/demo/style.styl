@@ -1,0 +1,89 @@
+body, html
+  margin: 0
+  font: 14px/1.4 'Helvetica Neue', Helvetica, Arial
+  background-color: #31323D
+  color: #e6e1dc
+  height: 100%
+
+#container
+  height: 100%
+
+@import "demo/animates/animates.styl";
+
+.blue
+  background-color: blue
+.red
+  background-color: red
+.green
+  background-color: green
+.orange
+  background-color: orange
+.purple
+  background-color: purple
+
+.blue
+  background-color: #3498DB
+.red
+  background-color: #B9121B
+.green
+  background-color: #BEDB39
+.orange
+  background-color: #ffa500
+.purple
+  background-color: #9768D1
+
+
+.demo
+  display: flex
+  height: 100%
+
+.control-panel
+  padding: 1em
+  display: flex
+  flex-direction: column
+  & > *:not(:first-child)
+    margin-top: 1em
+  h1
+    font-size: 26px
+    line-height: 0.94
+    small
+      font-size: 17px
+      color: #ADCEF0
+      font-style: italic
+  legend
+    font-weight: bold
+  label
+    display: block
+  input[type="range"]
+    display: block
+  .radiogroup
+    label
+      display: flex
+      margin-left: -1em
+      margin-right: -1em
+      padding: 0.3em 2em 0.3em 1em
+      align-items: center
+      cursor: pointer
+      &:hover
+        background-color: #414363
+    span
+      margin-left: 0.3em
+  .github-btn
+    border: 0
+
+.output-panel
+  background-color: #f5f5fd
+  flex-grow: 1
+  position: relative
+
+.cta-button
+  padding: 1em
+  cursor: pointer
+
+.badges
+  position: absolute
+  bottom: 2em
+  & > *
+    display: block
+    &:not(:first-child)
+      margin-top: 1em

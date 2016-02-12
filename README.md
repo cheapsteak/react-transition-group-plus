@@ -2,6 +2,8 @@
 
 A drop-in replacement for [ReactTransitionGroup](https://facebook.github.io/react/docs/animation.html#low-level-api-reacttransitiongroup) that adds the ability to specify transition order and makes transitions interruptable.
 
+See a comparative [demo](cheapsteak.github.com/react-transition-group-plus).
+
 ### Installation
 
 ```
@@ -10,11 +12,11 @@ npm install --save react-transition-group-plus
 
 ### Usage 
 
-Usage of TransitionGroupPlus is nearly identical to ReactTransitionGroup. See the [guide on react's website]((https://facebook.github.io/react/docs/animation.html#low-level-api-reacttransitiongroup)) on how to use ReactTransitionGroup.  
+Usage of TransitionGroupPlus is nearly identical to ReactTransitionGroup. (See the [guide on react's website]((https://facebook.github.io/react/docs/animation.html#low-level-api-reacttransitiongroup)) on how to use ReactTransitionGroup)  
 
 It takes an additional _optional_ prop `transitionMode` that can have the following values:  
 
-- `simultaneous` _(default)_  
+- `simultaneous` _(default. you can leave out this prop out altogether)_  
   `componentWillEnter` and `componentWillLeave` will be run at the same time.  
 - `out-in`  
   Wait for the outgoing component's `componentWillLeave` to finish before calling the incoming component's `componentWillEnter`.  

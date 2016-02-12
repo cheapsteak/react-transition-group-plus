@@ -1,6 +1,6 @@
 {
   "name": "react-transition-group-plus",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "More full featured transition group for react",
   "files": [
     "*.md",
@@ -17,6 +17,8 @@
   "scripts": {
     "start": "rm -rf public && gulp",
     "build": "rm -rf public && gulp build",
+    "build:production": "rm -rf public && NODE_ENV=production gulp build",
+    "deploy:pages": "npm run build:production && gulp deploy:pages",
     "lint": "eslint src",
     "test": "mocha src/**/__tests__/*.js --compilers js:babel-core/register --require test/test-helper"
   },
@@ -35,14 +37,14 @@
     "source": "./src",
     "destination": "./public",
     "scripts": {
-      "source": "./src/main.js",
+      "source": "./src/demo/main.js",
       "destination": "./public/js/",
       "extensions": [],
       "filename": "bundle.js"
     },
     "templates": {
-      "source": "./src/*.jade",
-      "watch": "./src/*.jade",
+      "source": "./src/demo/*.jade",
+      "watch": "./src/demo/*.jade",
       "destination": "./public/",
       "revision": "./public/**/*.html"
     },
@@ -77,7 +79,7 @@
     "babel-plugin-react-transform": "^2.0.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-es2015": "^6.1.18",
-    "babel-preset-react": "^6.3.13",
+    "babel-preset-react": "^6.5.0",
     "babel-preset-stage-1": "^6.3.13",
     "babel-runtime": "^5.8.35",
     "babelify": "^7.2.0",
@@ -95,6 +97,7 @@
     "gulp-autoprefixer": "1.0.1",
     "gulp-concat": "^2.6.0",
     "gulp-duration": "0.0.0",
+    "gulp-gh-pages": "^0.5.4",
     "gulp-inject": "^3.0.0",
     "gulp-jade": "~0.9.0",
     "gulp-replace": "^0.5.3",

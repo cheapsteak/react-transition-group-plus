@@ -21,6 +21,8 @@ import watchify from 'watchify';
 import watch from 'gulp-watch';
 import inject from 'gulp-inject';
 
+import ghPages from 'gulp-gh-pages';
+
 // eslint "no-process-env":0
 const production = process.env.NODE_ENV === 'production';
 
@@ -71,7 +73,7 @@ gulp.task('templates', ['styles', 'scripts'], () => {
     pretty: !production
   }))
   .on('error', handleError)
-  .pipe(inject(resources, {ignorePath: 'public', removeTags: true}))
+  .pipe(inject(resources, {ignorePath: ['public', '../../public'], removeTags: true, relative: true}))
   .pipe(gulp.dest(config.templates.destination));
 
   if(production) {
@@ -161,6 +163,11 @@ gulp.task('watch', () => {
     .pipe(gulp.dest(config.scripts.destination))
     .pipe(duration('Rebundling browserify bundle'));
   }).emit('update');
+});
+
+gulp.task('deploy:pages', function() {
+  return gulp.src('./public/**/*')
+    .pipe(ghPages());
 });
 
 gulp.task('build', ['styles', 'assets', 'scripts', 'templates']);
