@@ -2,7 +2,7 @@
 
 A drop-in replacement for [ReactTransitionGroup](https://facebook.github.io/react/docs/animation.html#low-level-api-reacttransitiongroup) that adds the ability to specify transition order and makes transitions interruptable.
 
-See a comparative [demo](cheapsteak.github.com/react-transition-group-plus).
+See a comparative [demo](http://cheapsteak.github.com/react-transition-group-plus/).
 
 ### Installation
 
