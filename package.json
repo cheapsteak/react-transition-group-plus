@@ -2,6 +2,10 @@
   "name": "react-transition-group-plus",
   "version": "0.1.2",
   "description": "More full featured transition group for react",
+  "files": [
+    "*.md",
+    "src/ReactTransitionGroupPlus.js"
+  ],
   "author": "Chang Wang <cheapsteak@gmail.com>",
   "license": "BSD",
   "main": "src/ReactTransitionGroupPlus.js",
