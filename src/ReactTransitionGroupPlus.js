@@ -12,22 +12,10 @@
 'use strict';
 
 var React = require('react');
-var _ = require('lodash');
+var difference = require('lodash.difference');
 var ReactTransitionChildMapping = require('react/lib/ReactTransitionChildMapping');
 
 var assign = require('react/lib/Object.assign');
-
-window.iii = 0;
-
-function getColorByKey (key) {
-  return 'color: ' + {
-    '.$red': '#aa3333',
-    '.$blue': '#3333ff',
-    '.$green': '#33aa33',
-    '.$orange': '#ffa500',
-    '.$purple': '#800080',
-  }[key];
-}
 
 var ReactTransitionGroupPlus = React.createClass({
   displayName: 'ReactTransitionGroupPlus',
@@ -35,7 +23,7 @@ var ReactTransitionGroupPlus = React.createClass({
   propTypes: {
     component: React.PropTypes.any,
     childFactory: React.PropTypes.func,
-    transitionMode: React.PropTypes.string,
+    transitionMode: React.PropTypes.oneOf(['in-out', 'out-in', 'simultaneous']),
   },
 
   getDefaultProps: function() {
@@ -110,7 +98,7 @@ var ReactTransitionGroupPlus = React.createClass({
     }
 
     if (this.props.transitionMode === 'out-in') {
-      this.keysToEnter = _.difference(this.keysToEnter, this.keysToLeave);
+      this.keysToEnter = difference(this.keysToEnter, this.keysToLeave);
     }
 
     // If we want to someday check for reordering, we could do it here.
@@ -120,10 +108,6 @@ var ReactTransitionGroupPlus = React.createClass({
     var keysToEnter = this.keysToEnter;
     var keysToLeave = this.keysToLeave;
 
-
-    // console.log({keysToEnter, keysToLeave, refs: JSON.stringify(Object.keys(this.refs))});
-
-    console.log('keysToLeave', keysToLeave, 'keysToEnter', keysToEnter);
     switch (this.props.transitionMode) {
       case 'out-in':
         this.keysToLeave = [];
@@ -187,10 +171,8 @@ var ReactTransitionGroupPlus = React.createClass({
   },
 
   performEnter: function(key) {
-    console.log('%c performEnter' + key, getColorByKey(key));
 
     if (this.currentlyEnteringKeys[key]) {
-      console.log('%c already entering', getColorByKey(key));
       return this.currentlyEnteringPromises[key];
     }
 
@@ -200,7 +182,6 @@ var ReactTransitionGroupPlus = React.createClass({
     var component = this.refs[key];
 
     if (!component) {
-      console.log('%c no component' + key, getColorByKey(key));
       return Promise.resolve();
     }
 
@@ -209,11 +190,9 @@ var ReactTransitionGroupPlus = React.createClass({
 
     var callback = this._handleDoneEntering.bind(this, key);
     this.pendingEnterCallbacks[key] = callback;
-    // this.cancel = component.componentCancelledEnter && component.componentCancelledEnter.bind(component);
 
     const enterPromise = new Promise(function (resolve) {
       if (component.componentWillEnter) {
-        console.log('%c waiting for willEnter to be called' + key, getColorByKey(key));
         component.componentWillEnter(resolve);
       } else {
         resolve();
@@ -241,7 +220,6 @@ var ReactTransitionGroupPlus = React.createClass({
 
     if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key) && this.currentlyEnteringOrEnteredKeys[key]) {
       // This was removed before it had fully entered. Remove it.
-      console.log('%c This was removed before it had fully entered. Remove it.' + key, getColorByKey(key));
 
       if (this.props.transitionMode !== 'in-out') {
         this.performLeave(key);
@@ -252,22 +230,18 @@ var ReactTransitionGroupPlus = React.createClass({
   performLeave: function(key) {
     if (this.currentlyLeavingKeys[key]) {
       //already leaving, let it finish
-      console.log('%c already leaving, let finish, return previous promise animation', getColorByKey(key))
       return this.currentlyLeavingPromises[key];
     } 
 
     this.cancelPendingEnter(key);
-    console.log('%c cancel pending enter', getColorByKey(key))
 
     var component = this.refs[key];
 
     if (!component) {
-      console.log('no component to leave!', key);
       return Promise.resolve();
     }
 
     this.currentlyLeavingKeys[key] = true;
-    console.log('%c perform leave', getColorByKey(key));
 
     var callback = this._handleDoneLeaving.bind(this, key);
     this.pendingLeaveCallbacks[key] = callback;
@@ -289,7 +263,6 @@ var ReactTransitionGroupPlus = React.createClass({
   },
 
   _handleDoneLeaving: function(key) {
-    console.log('%c done leaving ooooo____oooo' + key, getColorByKey(key));
     delete this.pendingLeaveCallbacks[key];
     delete this.currentlyLeavingKeys[key];
     delete this.currentlyLeavingPromises[key];
@@ -307,7 +280,6 @@ var ReactTransitionGroupPlus = React.createClass({
 
     if (currentChildMapping && currentChildMapping.hasOwnProperty(key)) {
       // This entered again before it fully left. Add it again.
-      console.log('%c This entered again before it fully left. Add it again.' + key, getColorByKey(key));
       // but only perform enter if currently animating out, not already animated out
       if (this.props.transitionMode !== 'in-out') {
         this.performEnter(key);

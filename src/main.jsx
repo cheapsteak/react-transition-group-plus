@@ -14,20 +14,7 @@ import _ from 'lodash';
 const enterDuration = 0.5;
 const leaveDuration = 0.5;
 
-function getColorByKey (key) {
-  return 'color: ' + {
-    'red': '#aa3333',
-    'blue': '#3333ff',
-    'green': '#33aa33',
-    'orange': '#ffa500',
-    'purple': '#800080',
-  }[key];
-}
-
 const animationStates = {
-  // beforeEnter: { opacity: 0, y: 100 },
-  // idle: { opacity: 1, y: 0 },
-  // afterLeave: { opacity: 0, y: -50},
   beforeEnter: { y: 100, scale: 1.1, opacity: 0 },
   idle: { y: 0, scale: 1, opacity: 1 },
   afterLeave: { y: -50, scale: 0.9, opacity: 0 },
@@ -36,30 +23,23 @@ const animationStates = {
 class Animates extends React.Component {
 
   static animationStates = animationStates;
-  // state = {
-  //   enterDuration: 0.3,
-  //   leaveDuration: 0.5,
-  // };
 
   componentDidMount() {
     const el = findDOMNode(this);
 
-    console.log('did mount');
-
     this.timeline = new TimelineMax()
       .pause()
-      .add(TweenMax.to(el, 1, _.extend(Animates.animationStates.beforeEnter, {ease: Linear.easeNone})))
+      .add(TweenMax.to(el, 1, _.extend({}, Animates.animationStates.beforeEnter, {ease: Linear.easeNone})))
       .add('beforeEnter')
-      .add(TweenMax.to(el, 1, _.extend(Animates.animationStates.idle, {ease: Linear.easeNone})))
+      .add(TweenMax.to(el, 1, _.extend({}, Animates.animationStates.idle, {ease: Linear.easeNone})))
       .add('idle')
-      .add(TweenMax.to(el, 1, _.extend(Animates.animationStates.afterLeave, {ease: Linear.easeNone})))
+      .add(TweenMax.to(el, 1, _.extend({}, Animates.animationStates.afterLeave, {ease: Linear.easeNone})))
       .add('afterLeave')
 
     this.timeline.seek('beforeEnter');
   }
 
   componentWillAppear(callback) {
-    console.log('will appear');
     this.timeline.seek('idle');
     callback();
   }
@@ -70,7 +50,6 @@ class Animates extends React.Component {
     this.timeline
       .seek('beforeEnter');
     TweenMax.killTweensOf(this.timeline);
-    TweenMax.set(el, {zIndex: this.props.key});
     TweenMax.to(this.timeline, this.props.enterDuration, { time: this.timeline.getLabelTime('idle'), onComplete: callback, ease: Sine.easeOut });
   }
 
@@ -98,7 +77,6 @@ class App extends React.Component {
   };
 
   handleClick = () => {
-    console.log('------------- click -----------');
     this.setState({counter: this.state.counter + 1});
   };
 
@@ -149,12 +127,10 @@ class App extends React.Component {
         Enter Duration: {this.state.enterDuration}
         <br />
         <input type="range" valueLink={this.linkState('enterDuration')} min="0" max="2" step="0.1"/>
-        <input type="number" valueLink={this.linkState('enterDuration')} min="0" max="2"/>
         <br />
         Leave Duration: {this.state.leaveDuration}
         <br />
         <input type="range" valueLink={this.linkState('leaveDuration')} min="0" max="2" step="0.1"/>
-        <input type="number" valueLink={this.linkState('leaveDuration')} min="0" max="2"/>
       </label>
       <br/>
       <button onClick={this.handleClick}>
