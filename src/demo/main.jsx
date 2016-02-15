@@ -72,7 +72,12 @@ class App extends React.Component {
 
     return <div className="demo">
       <div className="control-panel">
-        <h1>Transition<br/>Group<br/>Plus<br/><small>demo</small></h1>
+        <h1>
+          <a href="https://github.com/cheapsteak/react-transition-group-plus" target="_blank">
+            Transition<br/>Group<br/>Plus<br/>
+          </a>
+          <small>demo</small>
+        </h1>
         <RadioGroup
           name="transitionGroupComponent"
           selectedValue={selectedTransitionGroupComponentName}
