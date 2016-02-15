@@ -43,7 +43,6 @@ var ReactTransitionGroupPlus = React.createClass({
   },
 
   componentWillMount: function() {
-    window.ttt = this;
     // previously currently visible
     // don't want to performLeave on keys that never entered
     this.currentlyEnteringOrEnteredKeys = {};
