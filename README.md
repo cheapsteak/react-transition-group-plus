@@ -6,14 +6,14 @@ A drop-in replacement for ReactTransitionGroup that allows interruptible transit
 
 ReactTransitionGroup has a few shortcomings  
 
-- **The first `componentWillEnter` and `componentWillLeave` are _always_ called at the same time.**   
+- **Different components' `componentWillEnter` and `componentWillLeave` can only occur simultaneously.**   
   This becomes a problem if you want to have a transition where you want the incoming component's entrance animation to happen only after the outgoing component's exit animation has finished, or vice versa.  
 
-- **Transitions can't be interrupted**.  
+- **The same component's transitions can't be interrupted**.  
   Once a component's `componentWillEnter` is called, calls to the same component's `componentWillLeave` will be deferred until the enter animation finishes   
-  This problem becomes apparent for page transitions and carousels. 
+  This problem becomes apparent for page transitions and carousels, when something that's entering might need to immediately exit.  
 
-TransitionGroupPlus builds upon ReactTransitionGroup's existing code and solves these problems.
+TransitionGroupPlus builds upon ReactTransitionGroup's existing code and solves these problems.  
 
 ### Demo
 See a comparative [demo](http://cheapsteak.github.com/react-transition-group-plus/).
@@ -27,7 +27,7 @@ npm install --save react-transition-group-plus
 
 ### Usage 
 
-Usage of TransitionGroupPlus is nearly identical to ReactTransitionGroup. (See the [guide on react's website]((https://facebook.github.io/react/docs/animation.html#low-level-api-reacttransitiongroup)) on how to use ReactTransitionGroup)  
+Usage of TransitionGroupPlus is nearly identical to ReactTransitionGroup. (See the [guide on react's website](https://facebook.github.io/react/docs/animation.html#low-level-api-reacttransitiongroup) on how to use ReactTransitionGroup)  
 
 It takes an additional optional prop: `transitionMode`, that can have the following values:  
 
