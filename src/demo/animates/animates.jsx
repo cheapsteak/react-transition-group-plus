@@ -30,8 +30,7 @@ export default class Animates extends React.Component {
   componentWillEnter(callback) {
     const el = findDOMNode(this);
 
-    this.timeline
-      .seek('beforeEnter');
+    this.timeline.seek('beforeEnter');
     TweenMax.killTweensOf(this.timeline);
     TweenMax.to(this.timeline, this.props.enterDuration, { time: this.timeline.getLabelTime('idle'), onComplete: callback, ease: Sine.easeOut });
   }
