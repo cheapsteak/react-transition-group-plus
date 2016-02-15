@@ -27,7 +27,7 @@ class App extends React.Component {
     counter: 0,
     transitionMode: 'simultaneous',
     transitionGroupComponent: ReactTransitionGroupPlus,
-    enterDuration: 0.3,
+    enterDuration: 0.8,
     leaveDuration: 0.3,
   };
 
@@ -111,7 +111,12 @@ class App extends React.Component {
         </div>
       </div>
 
-        <TransitionGroup transitionMode={this.state.transitionMode} component="div" className="output-panel">
+        <TransitionGroup
+          transitionMode={this.state.transitionMode}
+          component="div"
+          className="output-panel"
+          onClick={this.handleClick}
+          >
           <Animates
             key={this.state.counter}
             className={color}
