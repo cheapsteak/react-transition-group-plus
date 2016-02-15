@@ -43,10 +43,7 @@ var ReactTransitionGroupPlus = React.createClass({
   },
 
   componentWillMount: function() {
-    // previously currently visible
-    // don't want to performLeave on keys that never entered
     this.currentlyEnteringOrEnteredKeys = {};
-    // don't want to performEnter on keys that never left
     this.currentlyEnteringKeys = {};
     this.currentlyEnteringPromises = {};
     this.currentlyLeavingKeys = {};
