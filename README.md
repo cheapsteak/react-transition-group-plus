@@ -1,4 +1,4 @@
-# React TransitionGroupPlus [![npm](https://img.shields.io/npm/v/react-transition-group-plus.svg?style=flat-square)]()
+# React TransitionGroupPlus [![npm](https://img.shields.io/npm/v/react-transition-group-plus.svg?style=flat-square)](https://www.npmjs.com/package/react-transition-group-plus)
 
 A drop-in replacement for ReactTransitionGroup that allows interruptible transitions and specifying transition order.
 
