@@ -6,17 +6,19 @@ A drop-in replacement for ReactTransitionGroup that allows interruptible transit
 
 ReactTransitionGroup has a few shortcomings  
 
-- **Different components' `componentWillEnter` and `componentWillLeave` can only occur simultaneously.**   
-  This becomes a problem if you want to have a transition where you want the incoming component's entrance animation to happen only after the outgoing component's exit animation has finished, or vice versa.  
+- **Animation order can't be specified.**   
+  Different components' `componentWillEnter` and `componentWillLeave` always occur simultaneously.  
+  It's difficult to wait for the outgoing component's `componentWillLeave` to finish before running the incoming component's `componentWillEnter`. 
 
 - **The same component's transitions can't be interrupted**.  
-  Once a component's `componentWillEnter` is called, calls to the same component's `componentWillLeave` will be deferred until the enter animation finishes   
+  Once a component's `componentWillEnter` is called, calls to the same component's `componentWillLeave` will be delayed until the enter animation finishes   
   This problem becomes apparent for page transitions and carousels, when something that's entering might need to immediately exit.  
 
-TransitionGroupPlus builds upon ReactTransitionGroup's existing code and solves these problems.  
+TransitionGroupPlus builds upon ReactTransitionGroup's existing code to solve these problems.  
 
 ### Demo
-See a comparative [demo](http://cheapsteak.github.com/react-transition-group-plus/).
+See a comparative [demo](http://cheapsteak.github.com/react-transition-group-plus/).  
+Aside from being able to specify transition order, notice how a component's enter transition is aborted and the leave transition runs as soon as a component should no longer be active.  
 
 
 ### Installation
@@ -33,6 +35,7 @@ It takes an additional optional prop: `transitionMode`, that can have the follow
 
 - `simultaneous` _(default)_  
   `componentWillEnter` and `componentWillLeave` will be run at the same time.  
+  The `transitionMode` prop can be omitted if simultaneous transitions are desired as this is the default value.  
 - `out-in`  
   Wait for the outgoing component's `componentWillLeave` to finish before calling the incoming component's `componentWillEnter`.  
   Note:  
