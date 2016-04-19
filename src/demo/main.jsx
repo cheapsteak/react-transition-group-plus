@@ -6,9 +6,6 @@ import ReactTransitionGroupPlus from '../ReactTransitionGroupPlus.js';
 import animate from 'gsap-promise';
 import RadioGroup from 'react-radio-group';
 
-import reactMixin from 'react-mixin';
-import LinkedStateMixin from 'react-addons-linked-state-mixin';
-
 import _ from 'lodash';
 
 import Animates from './animates/animates.jsx';
@@ -21,7 +18,6 @@ const colors = [
   'purple',
 ];
 
-@reactMixin.decorate(LinkedStateMixin)
 class App extends React.Component {
   state = {
     counter: 0,
@@ -93,11 +89,11 @@ class App extends React.Component {
         {transitionModeRadioGroup}
         <label>
           <span>Enter Duration: {this.state.enterDuration}</span>
-          <input type="range" valueLink={this.linkState('enterDuration')} min="0" max="2" step="0.1"/>
+          <input type="range" onChange={(e) => this.setState({enterDuration: e.currentTarget.value})} min="0" max="2" step="0.1"/>
         </label>
         <label>
           <span>Leave Duration: {this.state.leaveDuration}</span>
-          <input type="range" valueLink={this.linkState('leaveDuration')} min="0" max="2" step="0.1"/>
+          <input type="range" onChange={(e) => this.setState({leaveDuration: e.currentTarget.value})} min="0" max="2" step="0.1"/>
         </label>
         <button className="cta-button" onClick={this.handleClick}>
           Animate!
