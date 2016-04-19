@@ -1,6 +1,16 @@
 # React TransitionGroupPlus [![npm](https://img.shields.io/npm/v/react-transition-group-plus.svg?style=flat-square)](https://www.npmjs.com/package/react-transition-group-plus)
 
 A drop-in replacement for ReactTransitionGroup that allows interruptible transitions and specifying transition order.
+### Installation
+
+```
+npm install --save react-transition-group-plus
+```
+
+### Demo
+See a **[comparative demo](http://cheapsteak.github.com/react-transition-group-plus/)** between ReactTransitionGroup and TransitionGroupPlus
+
+Aside from being able to specify transition order, notice how a component's enter transition is aborted and the leave transition runs as soon as a component should no longer be active.  
 
 ### Why?
 
@@ -16,16 +26,6 @@ ReactTransitionGroup has a few shortcomings
 
 TransitionGroupPlus builds upon ReactTransitionGroup's existing code to solve these problems.  
 
-### Demo
-See a comparative [demo](http://cheapsteak.github.com/react-transition-group-plus/).  
-Aside from being able to specify transition order, notice how a component's enter transition is aborted and the leave transition runs as soon as a component should no longer be active.  
-
-
-### Installation
-
-```
-npm install --save react-transition-group-plus
-```
 
 ### Usage 
 
