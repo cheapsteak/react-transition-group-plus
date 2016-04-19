@@ -31,7 +31,7 @@
     "lodash.difference": "^4.0.2"
   },
   "peerDependencies": {
-    "react": "^0.14.6"
+    "react": "^15.0.1"
   },
   "build": {
     "source": "./src",
