@@ -15,7 +15,7 @@ var React = require('react');
 var difference = require('lodash.difference');
 var ReactTransitionChildMapping = require('react/lib/ReactTransitionChildMapping');
 
-var assign = require('react/lib/Object.assign');
+var assign = require('object-assign');
 
 var ReactTransitionGroupPlus = React.createClass({
   displayName: 'ReactTransitionGroupPlus',
