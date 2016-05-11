@@ -31,17 +31,22 @@ TransitionGroupPlus builds upon ReactTransitionGroup's existing code to solve th
 
 Usage of TransitionGroupPlus is nearly identical to ReactTransitionGroup. (See the [guide on react's website](https://facebook.github.io/react/docs/animation.html#low-level-api-reacttransitiongroup) on how to use ReactTransitionGroup)  
 
-It takes an additional optional prop: `transitionMode`, that can have the following values:  
+Additional props: 
 
-- `simultaneous` _(default)_  
-  `componentWillEnter` and `componentWillLeave` will be run at the same time.  
-  The `transitionMode` prop can be omitted if simultaneous transitions are desired as this is the default value.  
-- `out-in`  
-  Wait for the outgoing component's `componentWillLeave` to finish before calling the incoming component's `componentWillEnter`.  
-  Note:  
-  If an incoming component needs to leave while it's still waiting for its `componentWillEnter` to be called, its `componentWillEnter` will be skipped and only its `componentWillLeave` will be called.
-- `in-out`  
-  Wait for the incoming component's `componentWillEnter` to finish before calling the outgoing component's `componentWillLeave`.
+- **`transitionMode`** (optional) 
+  can have the following values:  
+  - `simultaneous` _(default)_  
+    `componentWillEnter` and `componentWillLeave` will be run at the same time.  
+    The `transitionMode` prop can be omitted if simultaneous transitions are desired as this is the default value.  
+  - `out-in`  
+    Wait for the outgoing component's `componentWillLeave` to finish before calling the incoming component's `componentWillEnter`.  
+    Note:  
+    If an incoming component needs to leave while it's still waiting for its `componentWillEnter` to be called, its `componentWillEnter` will be skipped and only its `componentWillLeave` will be called.
+  - `in-out`  
+    Wait for the incoming component's `componentWillEnter` to finish before calling the outgoing component's `componentWillLeave`.
+- **`deferLeavingComponentRemoval`** (optional, boolean, defaults to `false`)  
+  When `true`, children that leave will not be removed immediately after their `componentWillLeave` is called, but will wait for the next component's `componentWillEnter` to finish.  
+  Only affects the transition modes "simultaneous" and "out-in". Has no effect on "in-out".  
 
 ##### sample:
 ```js
