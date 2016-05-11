@@ -24,6 +24,7 @@ var ReactTransitionGroupPlus = React.createClass({
     component: React.PropTypes.any,
     childFactory: React.PropTypes.func,
     transitionMode: React.PropTypes.oneOf(['in-out', 'out-in', 'simultaneous']),
+    deferLeavingComponentRemoval: React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
@@ -33,6 +34,7 @@ var ReactTransitionGroupPlus = React.createClass({
         return arg;
       },
       transitionMode: 'simultaneous',
+      deferLeavingComponentRemoval: true,
     };
   },
 
@@ -50,6 +52,7 @@ var ReactTransitionGroupPlus = React.createClass({
     this.currentlyLeavingPromises = {};
     this.pendingEnterCallbacks = {};
     this.pendingLeaveCallbacks = {};
+    this.deferredLeaveRemovalCallbacks = [];
     this.keysToEnter = [];
     this.keysToLeave = [];
     this.cancel = null;
@@ -205,6 +208,9 @@ var ReactTransitionGroupPlus = React.createClass({
     delete this.currentlyEnteringPromises[key];
     delete this.currentlyEnteringKeys[key];
 
+    this.deferredLeaveRemovalCallbacks.forEach(function(fn) { fn(); });
+    this.deferredLeaveRemovalCallbacks = [];
+
     var component = this.refs[key];
     if (component.componentDidEnter) {
       component.componentDidEnter();
@@ -274,6 +280,14 @@ var ReactTransitionGroupPlus = React.createClass({
       this.props.children
     );
 
+    var updateChildren = function updateChildren () {
+      this.setState(function(state) {
+        var newChildren = assign({}, state.children);
+        delete newChildren[key];
+        return {children: newChildren};
+      });
+    }.bind(this);
+
     if (currentChildMapping && currentChildMapping.hasOwnProperty(key)) {
       // This entered again before it fully left. Add it again.
       // but only perform enter if currently animating out, not already animated out
@@ -282,11 +296,13 @@ var ReactTransitionGroupPlus = React.createClass({
       }
     } else {
       delete this.currentlyEnteringOrEnteredKeys[key];
-      this.setState(function(state) {
-        var newChildren = assign({}, state.children);
-        delete newChildren[key];
-        return {children: newChildren};
-      });
+
+      if (this.props.deferLeavingComponentRemoval && this.props.transitionMode !== 'in-out') {
+        this.deferredLeaveRemovalCallbacks.push(updateChildren);
+        this.forceUpdate();
+      } else {
+        updateChildren();
+      }
     }
   },
 
