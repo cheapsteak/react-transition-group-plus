@@ -28,7 +28,8 @@
     "animations"
   ],
   "dependencies": {
-    "lodash.difference": "^4.0.2"
+    "lodash.difference": "^4.0.2",
+    "object-assign": "^4.0.1"
   },
   "peerDependencies": {
     "react": "^15.0.1"
@@ -112,7 +113,6 @@
     "lodash": "^4.3.0",
     "mocha": "^2.2.5",
     "node-notifier": "^4.2.1",
-    "object-assign": "^4.0.1",
     "react-addons-transition-group": "^0.14.6",
     "react-dom": "^0.14.6",
     "react-radio-group": "^2.2.0",
