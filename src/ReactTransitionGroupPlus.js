@@ -320,6 +320,14 @@ var ReactTransitionGroupPlus = React.createClass({
     }
   },
 
+  cleanProps: function(props) {
+    delete props.component;
+    delete props.transitionMode;
+    delete props.childFactory;
+    delete props.deferLeavingComponentRemoval;
+    return props;
+  },
+
   render: function() {
     // TODO: we could get rid of the need for the wrapper node
     // by cloning a single child
@@ -340,7 +348,7 @@ var ReactTransitionGroupPlus = React.createClass({
     }
     return React.createElement(
       this.props.component,
-      this.props,
+      this.cleanProps(assign({},this.props)),
       childrenToRender
     );
   },
