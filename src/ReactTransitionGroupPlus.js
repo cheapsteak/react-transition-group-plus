@@ -190,7 +190,7 @@ var ReactTransitionGroupPlus = React.createClass({
     var callback = this._handleDoneEntering.bind(this, key);
     this.pendingEnterCallbacks[key] = callback;
 
-    const enterPromise = new Promise(function (resolve) {
+    var enterPromise = new Promise(function (resolve) {
       if (component.componentWillEnter) {
         component.componentWillEnter(resolve);
       } else {
@@ -233,7 +233,7 @@ var ReactTransitionGroupPlus = React.createClass({
     if (this.currentlyLeavingKeys[key]) {
       //already leaving, let it finish
       return this.currentlyLeavingPromises[key];
-    } 
+    }
 
     this.cancelPendingEnter(key);
 
@@ -248,7 +248,7 @@ var ReactTransitionGroupPlus = React.createClass({
     var callback = this._handleDoneLeaving.bind(this, key);
     this.pendingLeaveCallbacks[key] = callback;
 
-    const leavePromise = new Promise(function (resolve) {
+    var leavePromise = new Promise(function (resolve) {
       if (component.componentWillLeave) {
         component.componentWillLeave(resolve);
       } else {
