@@ -34,7 +34,7 @@ var ReactTransitionGroupPlus = React.createClass({
         return arg;
       },
       transitionMode: 'simultaneous',
-      deferLeavingComponentRemoval: true,
+      deferLeavingComponentRemoval: false,
     };
   },
 
