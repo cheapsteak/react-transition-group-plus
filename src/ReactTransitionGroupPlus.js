@@ -212,7 +212,7 @@ var ReactTransitionGroupPlus = React.createClass({
     this.deferredLeaveRemovalCallbacks = [];
 
     var component = this.refs[key];
-    if (component.componentDidEnter) {
+    if (component && component.componentDidEnter) {
       component.componentDidEnter();
     }
 
