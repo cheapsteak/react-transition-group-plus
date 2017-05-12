@@ -155,7 +155,7 @@ var ReactTransitionGroupPlus = React.createClass({
 
   _handleDoneAppearing: function(key) {
     var component = this.refs[key];
-    if (component.componentDidAppear) {
+    if (component && component.componentDidAppear) {
       component.componentDidAppear();
     }
 
