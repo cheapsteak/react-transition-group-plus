@@ -1,6 +1,6 @@
 {
   "name": "react-transition-group-plus",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "More full featured transition group for react",
   "files": [
     "*.md",
