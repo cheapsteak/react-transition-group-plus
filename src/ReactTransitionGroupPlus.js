@@ -12,19 +12,21 @@
 'use strict';
 
 var React = require('react');
+var PropTypes = require('prop-types');
+var createReactClass = require('create-react-class');
 var difference = require('lodash.difference');
 var ReactTransitionChildMapping = require('react/lib/ReactTransitionChildMapping');
 
 var assign = require('object-assign');
 
-var ReactTransitionGroupPlus = React.createClass({
+var ReactTransitionGroupPlus = createReactClass({
   displayName: 'ReactTransitionGroupPlus',
 
   propTypes: {
-    component: React.PropTypes.any,
-    childFactory: React.PropTypes.func,
-    transitionMode: React.PropTypes.oneOf(['in-out', 'out-in', 'simultaneous']),
-    deferLeavingComponentRemoval: React.PropTypes.bool,
+    component: PropTypes.any,
+    childFactory: PropTypes.func,
+    transitionMode: PropTypes.oneOf(['in-out', 'out-in', 'simultaneous']),
+    deferLeavingComponentRemoval: PropTypes.bool,
   },
 
   getDefaultProps: function() {

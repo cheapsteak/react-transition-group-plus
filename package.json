@@ -28,8 +28,10 @@
     "animations"
   ],
   "dependencies": {
+    "create-react-class": "^15.5.3",
     "lodash.difference": "^4.0.2",
-    "object-assign": "^4.0.1"
+    "object-assign": "^4.0.1",
+    "prop-types": "^15.5.10"
   },
   "peerDependencies": {
     "react": "^15.0.1"
