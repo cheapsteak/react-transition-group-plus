@@ -116,6 +116,7 @@
     "lodash": "^4.3.0",
     "mocha": "^2.2.5",
     "node-notifier": "^4.2.1",
+    "react": "^15.6.1",
     "react-addons-transition-group": "^0.14.6",
     "react-dom": "^15.6.1",
     "react-radio-group": "^2.2.0",
