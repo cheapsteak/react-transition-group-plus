@@ -12,11 +12,11 @@ export default class Animates extends React.Component {
 
     this.timeline = new TimelineMax()
       .pause()
-      .add(TweenMax.to(el, 1, _.extend({}, Animates.animationStates.beforeEnter, {ease: Linear.easeNone})))
+      .add(TweenMax.to(el, 1, Object.assign({}, Animates.animationStates.beforeEnter, {ease: Linear.easeNone})))
       .add('beforeEnter')
-      .add(TweenMax.to(el, 1, _.extend({}, Animates.animationStates.idle, {ease: Linear.easeNone})))
+      .add(TweenMax.to(el, 1, Object.assign({}, Animates.animationStates.idle, {ease: Linear.easeNone})))
       .add('idle')
-      .add(TweenMax.to(el, 1, _.extend({}, Animates.animationStates.afterLeave, {ease: Linear.easeNone})))
+      .add(TweenMax.to(el, 1, Object.assign({}, Animates.animationStates.afterLeave, {ease: Linear.easeNone})))
       .add('afterLeave')
 
     this.timeline.seek('beforeEnter');
