@@ -16,7 +16,7 @@ var PropTypes = require('prop-types');
 var createReactClass = require('create-react-class');
 var difference = require('lodash.difference');
 var ReactTransitionChildMapping = require('react/lib/ReactTransitionChildMapping');
-
+var Expose = require('react-expose').default;
 var assign = require('object-assign');
 
 var ReactTransitionGroupPlus = createReactClass({
@@ -331,6 +331,18 @@ var ReactTransitionGroupPlus = createReactClass({
   },
 
   render: function() {
+    const expose = Expose({
+      componentTypes: this.props.passthroughComponents || [],
+      exposeKeys: [
+        'componentWillAppear',
+        'componentDidAppear',
+        'componentWillEnter',
+        'componentDidEnter',
+        'componentWillLeave',
+        'componentDidLeave',
+      ],
+    });
+
     // TODO: we could get rid of the need for the wrapper node
     // by cloning a single child
     var childrenToRender = [];
@@ -342,10 +354,12 @@ var ReactTransitionGroupPlus = createReactClass({
         // already been removed. In case you need this behavior you can provide
         // a childFactory function to wrap every child, even the ones that are
         // leaving.
-        childrenToRender.push(React.cloneElement(
-          this.props.childFactory(child),
-          {ref: key, key: key}
-        ));
+        childrenToRender.push(
+          React.cloneElement(
+            this.props.childFactory(assign({}, child, { type: expose(child.type) })),
+            { ref: key, key: key }
+          )
+        );
       }
     }
     return React.createElement(
