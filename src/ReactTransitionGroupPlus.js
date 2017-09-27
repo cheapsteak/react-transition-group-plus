@@ -15,9 +15,20 @@ var React = require('react');
 var PropTypes = require('prop-types');
 var createReactClass = require('create-react-class');
 var difference = require('lodash.difference');
-var ReactTransitionChildMapping = require('react/lib/ReactTransitionChildMapping');
+var keyBy = require('lodash.keyBy');
 
 var assign = require('object-assign');
+
+var getChildMapping = function (children) {
+  return keyBy(
+    React.Children.toArray(
+      children
+    ),
+    function(child) {
+      return child.key;
+    }
+  );
+};
 
 var ReactTransitionGroupPlus = createReactClass({
   displayName: 'ReactTransitionGroupPlus',
@@ -42,7 +53,7 @@ var ReactTransitionGroupPlus = createReactClass({
 
   getInitialState: function() {
     return {
-      children: ReactTransitionChildMapping.getChildMapping(this.props.children),
+      children: getChildMapping(this.props.children),
     };
   },
 
@@ -70,16 +81,17 @@ var ReactTransitionGroupPlus = createReactClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    var nextChildMapping = ReactTransitionChildMapping.getChildMapping(
+    var nextChildMapping = getChildMapping(
       nextProps.children
     );
     var prevChildMapping = this.state.children;
 
+    var mergedChildMapping = {
+      ...prevChildMapping,
+      ...nextChildMapping
+    };
     this.setState({
-      children: ReactTransitionChildMapping.mergeChildMappings(
-        prevChildMapping,
-        nextChildMapping
-      ),
+      children: mergedChildMapping
     });
 
     var key;
@@ -161,7 +173,7 @@ var ReactTransitionGroupPlus = createReactClass({
       component.componentDidAppear();
     }
 
-    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(
+    var currentChildMapping = getChildMapping(
       this.props.children
     );
 
@@ -218,7 +230,7 @@ var ReactTransitionGroupPlus = createReactClass({
       component.componentDidEnter();
     }
 
-    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(
+    var currentChildMapping = getChildMapping(
       this.props.children
     );
 
@@ -278,7 +290,7 @@ var ReactTransitionGroupPlus = createReactClass({
     }
 
 
-    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(
+    var currentChildMapping = getChildMapping(
       this.props.children
     );
 
