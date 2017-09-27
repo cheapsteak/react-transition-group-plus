@@ -86,10 +86,10 @@ var ReactTransitionGroupPlus = createReactClass({
     );
     var prevChildMapping = this.state.children;
 
-    var mergedChildMapping = {
-      ...prevChildMapping,
-      ...nextChildMapping
-    };
+    var mergedChildMapping = assign({},
+      prevChildMapping,
+      nextChildMapping
+    );
     this.setState({
       children: mergedChildMapping
     });

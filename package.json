@@ -29,6 +29,7 @@
   ],
   "dependencies": {
     "create-react-class": "^15.5.3",
+    "lodash.assign": "^4.2.0",
     "lodash.difference": "^4.0.2",
     "lodash.keyby": "^4.6.0",
     "object-assign": "^4.0.1",
