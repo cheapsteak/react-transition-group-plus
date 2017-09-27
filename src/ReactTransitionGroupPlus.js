@@ -15,7 +15,7 @@ var React = require('react');
 var PropTypes = require('prop-types');
 var createReactClass = require('create-react-class');
 var difference = require('lodash.difference');
-var keyBy = require('lodash.keyBy');
+var keyBy = require('lodash.keyby');
 
 var assign = require('object-assign');
 
