@@ -2,7 +2,10 @@
 
 [![npm](https://img.shields.io/npm/v/react-transition-group-plus.svg)](https://www.npmjs.com/package/react-transition-group-plus)  [![npm](https://img.shields.io/npm/dt/react-transition-group-plus.svg)](https://npmcharts.com/compare/react-transition-group-plus?minimal=true)
 
-A drop-in replacement for ReactTransitionGroup that allows interruptible transitions and specifying transition order.
+A drop-in replacement for the original react-addons-transition-group that allows interruptible transitions and specifying transition order. 
+
+**Note that this is not API-compatible with react-transition-group v2**
+
 ### Installation
 
 ```
